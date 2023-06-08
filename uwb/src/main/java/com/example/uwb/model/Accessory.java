@@ -42,4 +42,13 @@ public class Accessory {
     public void setAlias(String alias) {
         this.alias = alias;
     }
+
+    @Override
+    public String toString() {
+        return "Accessory{" +
+                "name='" + name + '\'' +
+                ", mac='" + mac + '\'' +
+                ", alias='" + alias + '\'' +
+                '}';
+    }
 }
