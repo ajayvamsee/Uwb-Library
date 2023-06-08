@@ -99,6 +99,7 @@ public class BluetoothLEManagerHelper {
     public void unregisterListener() {
         this.mListener = null;
         try {
+            mContext.unregisterReceiver(bondStateChangeReceiver);
             mContext.unregisterReceiver(bluetoothStateChangeReceiver);
             mContext.unregisterReceiver(pinAndBondingBroadcastReceiver);
         } catch (IllegalArgumentException e) {
@@ -228,8 +229,6 @@ public class BluetoothLEManagerHelper {
     private void startPinBroadcastReceiver() {
         Log.d(TAG, "startPinBroadcastReceiver: ");
         IntentFilter intentFilter = new IntentFilter(BluetoothDevice.ACTION_PAIRING_REQUEST);
-        intentFilter.addAction(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
-        intentFilter.setPriority(IntentFilter.SYSTEM_HIGH_PRIORITY);
         mContext.registerReceiver(pinAndBondingBroadcastReceiver, intentFilter);
     }
 
