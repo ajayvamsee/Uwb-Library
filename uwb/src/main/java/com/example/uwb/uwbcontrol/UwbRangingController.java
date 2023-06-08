@@ -36,20 +36,18 @@ import java.util.TimerTask;
 public class UwbRangingController implements UwbRangingView.Listener, BluetoothLEManagerHelper.Listener, UwbManagerHelper.Listener {
 
     public static final String TAG = "UwbRangingController";
-    private List<Accessory> mAccessoriesList = new ArrayList<>();
+    private final List<Accessory> mAccessoriesList = new ArrayList<>();
 
     private final BluetoothLEManagerHelper mBluetoothLEManagerHelper;
     private final PreferenceStorageHelper mPreferenceStorageHelper;
     private final UwbManagerHelper mUwbManagerHelper;
-    private final LocationManagerHelper mLocationManagerHelper;
-    private final PermissionHelper mPermissionHelper;
 
 
     private Timer timerBleExpiredAccessories;
-    private HashMap<String, Timer> mTimerAccessoriesConnectList = new HashMap<>();
-    private HashMap<String, Timer> mTimerAccessoriesLegacyOoBSupportList = new HashMap<>();
+    private final HashMap<String, Timer> mTimerAccessoriesConnectList = new HashMap<>();
+    private final HashMap<String, Timer> mTimerAccessoriesLegacyOoBSupportList = new HashMap<>();
 
-    private List<SelectAccessoriesDialogItem> mSelectAccessoryList = new ArrayList<>();
+    private final List<SelectAccessoriesDialogItem> mSelectAccessoryList = new ArrayList<>();
 
     public UwbRangingController(BluetoothLEManagerHelper mBluetoothLEManagerHelper,
                                 PreferenceStorageHelper mPreferenceStorageHelper,
@@ -58,8 +56,6 @@ public class UwbRangingController implements UwbRangingView.Listener, BluetoothL
         this.mBluetoothLEManagerHelper = mBluetoothLEManagerHelper;
         this.mPreferenceStorageHelper = mPreferenceStorageHelper;
         this.mUwbManagerHelper = mUwbManagerHelper;
-        this.mLocationManagerHelper = mLocationManagerHelper;
-        this.mPermissionHelper = permissionHelper;
     }
 
     private UWBCallBack uwbCallBack;
@@ -205,21 +201,14 @@ public class UwbRangingController implements UwbRangingView.Listener, BluetoothL
 
         mSelectAccessoryList.clear();
 
-        if (bleStartDeviceScan()) {
-            // Start timer to handle expired accessories
-            //startTimerBleExpiredAccessories();
-        }
+        bleStartDeviceScan();
+        // Start timer to handle expired accessories
+        startTimerBleExpiredAccessories();
     }
 
     // ble start scan
     private boolean bleStartDeviceScan() {
-        Log.d(TAG, "bleStartDeviceScan: " + checkPermissions());
-
-        if (!checkPermissions()) {
-            // Permission missing
-            Log.d(TAG, "bleStartDeviceScan: Permission missing");
-            //return false;
-        }
+        Log.d(TAG, "bleStartDeviceScan: ");
 
         if (!mBluetoothLEManagerHelper.isSupported()) {
             //BLUETOOTH NOT SUPPORTED
@@ -230,12 +219,6 @@ public class UwbRangingController implements UwbRangingView.Listener, BluetoothL
         if (!mUwbManagerHelper.isSupported()) {
             // UWB NOT SUPPORTED
             Log.d(TAG, "UWB is not supported");
-            return false;
-        }
-
-        if (!mLocationManagerHelper.isSupported()) {
-            //LOCATION NOT SUPPORTED
-            Log.d(TAG, "Location is not supported");
             return false;
         }
 
@@ -251,11 +234,6 @@ public class UwbRangingController implements UwbRangingView.Listener, BluetoothL
             return false;
         }
 
-        if (!mLocationManagerHelper.isEnabled()) {
-            //LOCATION NOT ENABLED
-            Log.d(TAG, "Location is not enabled");
-            return false;
-        }
 
         Log.d(TAG,"BLE_SCAN_START");
         return mBluetoothLEManagerHelper.startLeDeviceScan();
@@ -264,18 +242,6 @@ public class UwbRangingController implements UwbRangingView.Listener, BluetoothL
     private boolean bleStopDeviceScan() {
         Log.d(TAG, "BLE_SCAN_STOP ");
         return mBluetoothLEManagerHelper.stopLeDeviceScan();
-    }
-
-
-    private boolean checkPermissions() {
-        Log.d(TAG, "checkPermissions: ");
-        return mPermissionHelper.hasPermission(Manifest.permission.BLUETOOTH) &&
-                mPermissionHelper.hasPermission(Manifest.permission.BLUETOOTH_ADMIN) &&
-                mPermissionHelper.hasPermission(Manifest.permission.BLUETOOTH_SCAN) &&
-                mPermissionHelper.hasPermission(Manifest.permission.BLUETOOTH_CONNECT) &&
-                mPermissionHelper.hasPermission(Manifest.permission.ACCESS_COARSE_LOCATION) &&
-                mPermissionHelper.hasPermission(Manifest.permission.ACCESS_FINE_LOCATION) &&
-                mPermissionHelper.hasPermission(Manifest.permission.UWB_RANGING);
     }
 
     private void startTimerBleExpiredAccessories() {
@@ -330,7 +296,6 @@ public class UwbRangingController implements UwbRangingView.Listener, BluetoothL
     private boolean uwbClose(Accessory accessory) {
         Log.d(TAG, "uwbClose: ");
         mUwbManagerHelper.close(accessory.getMac());
-        //log(LoggerHelper.LogEvent.LOG_EVENT_UWB_RANGING_PEER_DISCONNECTED, accessory);
         return true;
     }
 
@@ -414,7 +379,7 @@ public class UwbRangingController implements UwbRangingView.Listener, BluetoothL
         accessory = new Accessory(name, address, null);
 
 
-        // If Accessory Name or Accesory Mac address is null or empty, ignore the notification
+        // If Accessory Name or Accessory Mac address is null or empty, ignore the notification
         if (accessory.getMac() == null || accessory.getMac().isEmpty()
                 || accessory.getName() == null || accessory.getName().isEmpty()) {
             Log.d(TAG, "onBluetoothLEDeviceScanned: If Accessory Name or Accessory Mac address is null or empty");
@@ -441,17 +406,15 @@ public class UwbRangingController implements UwbRangingView.Listener, BluetoothL
         mSelectAccessoryList.add(selectAccessoriesDialogItem);
 
         bleConnectToDevice(accessory);
-        Log.d(TAG, "onBluetoothLEDeviceScanned: Accessory"+accessory.toString());
+        Log.d(TAG, "onBluetoothLEDeviceScanned:"+ accessory);
 
     }
 
     @Override
     public void onBluetoothLEDeviceConnected(String name, String address) {
         Log.d(TAG, "onBluetoothLEDeviceConnected: ");
-        Accessory accessory = null; //mDatabaseStorageHelper.getAliasedAccessory(address);
-        if (accessory == null) {
-            accessory = new Accessory(name, address, null);
-        }
+        Accessory accessory; //mDatabaseStorageHelper.getAliasedAccessory(address);
+        accessory = new Accessory(name, address, null);
 
         mAccessoriesList.add(accessory);
 
@@ -756,12 +719,10 @@ public class UwbRangingController implements UwbRangingView.Listener, BluetoothL
 
     private void uwbRangingSessionStarted(Accessory accessory) {
         Log.d(TAG, "Ranging started with accessory: " + accessory.getMac());
-        //log(LoggerHelper.LogEvent.LOG_EVENT_UWB_RANGING_START);
     }
 
     private void uwbRangingSessionStopped(Accessory accessory) {
         Log.d(TAG, "Ranging stopped with accessory: " + accessory.getMac());
-        //log(LoggerHelper.LogEvent.LOG_EVENT_UWB_RANGING_STOP);
     }
 
     private boolean transmitUwbPhoneConfigData(Accessory accessory, UwbPhoneConfigData uwbPhoneConfigData) {
