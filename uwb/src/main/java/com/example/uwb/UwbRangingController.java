@@ -223,31 +223,37 @@ public class UwbRangingController implements UwbRangingView.Listener, BluetoothL
 
         if (!mBluetoothLEManagerHelper.isSupported()) {
             //BLUETOOTH NOT SUPPORTED
+            Log.d(TAG, "Bluetooth is not supported");
             return false;
         }
 
         if (!mUwbManagerHelper.isSupported()) {
             // UWB NOT SUPPORTED
+            Log.d(TAG, "UWB is not supported");
             return false;
         }
 
         if (!mLocationManagerHelper.isSupported()) {
             //LOCATION NOT SUPPORTED
+            Log.d(TAG, "Location is not supported");
             return false;
         }
 
         if (!mBluetoothLEManagerHelper.isEnabled()) {
             //BLUETOOTH NOT ENABLED
+            Log.d(TAG, "Bluetooth is not enabled");
             return false;
         }
 
         if (!mUwbManagerHelper.isEnabled()) {
             //UWB NOT ENABLED
+            Log.d(TAG, "UWB is not enabled");
             return false;
         }
 
         if (!mLocationManagerHelper.isEnabled()) {
             //LOCATION NOT ENABLED
+            Log.d(TAG, "Location is not enabled");
             return false;
         }
 
@@ -355,7 +361,8 @@ public class UwbRangingController implements UwbRangingView.Listener, BluetoothL
     @Override
     public void onBluetoothLEStateChanged(int state) {
         Log.d(TAG, "onBluetoothLEStateChanged: ");
-        // No need to handle all other states, only state on to state off transaction
+        // No need to handle all other states, only state on to state off transaction from MK
+        // Need too handle if other states as well
         if (state == BluetoothAdapter.STATE_OFF) {
             // Close all sessions
             bleClose();
@@ -366,6 +373,12 @@ public class UwbRangingController implements UwbRangingView.Listener, BluetoothL
 
             // Clear list with ongoing connections
             mAccessoriesList.clear();
+        } else if (state == BluetoothAdapter.STATE_ON) {
+            Log.d(TAG, "STATE_ON");
+        } else if (state == BluetoothAdapter.STATE_CONNECTED) {
+            Log.d(TAG, "STATE_CONNECTED");
+        } else if (state == BluetoothAdapter.STATE_DISCONNECTED) {
+            Log.d(TAG, "STATE_DISCONNECTED");
         }
     }
 

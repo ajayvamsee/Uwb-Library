@@ -99,10 +99,9 @@ public class BluetoothLEManagerHelper {
     public void unregisterListener() {
         this.mListener = null;
         try {
-            if (bluetoothStateChangeReceiver != null) {
-                mContext.unregisterReceiver(bluetoothStateChangeReceiver);
-            }
-        }catch (IllegalArgumentException e){
+            mContext.unregisterReceiver(bluetoothStateChangeReceiver);
+            mContext.unregisterReceiver(pinAndBondingBroadcastReceiver);
+        } catch (IllegalArgumentException e) {
             e.printStackTrace();
         }
     }
