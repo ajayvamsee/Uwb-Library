@@ -1,4 +1,4 @@
-package com.example.uwb;
+package com.example.uwb.uwbcontrol;
 
 import com.example.uwb.model.Accessory;
 import com.example.uwb.model.Position;

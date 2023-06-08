@@ -1,7 +1,7 @@
 package com.example.uwblibrary
 
 import android.util.Log
-import com.example.uwb.UwbRangingController
+import com.example.uwb.uwbcontrol.UwbRangingController
 import com.example.uwb.bluetooth.BluetoothLEManagerHelper
 import com.example.uwb.location.LocationManagerHelper
 import com.example.uwb.manager.UwbManagerHelper

@@ -4,7 +4,6 @@ import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
-import android.os.Build
 import android.os.Build.*
 import android.os.Bundle
 import android.provider.Settings
@@ -17,7 +16,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
-import com.example.uwb.UwbRangingController
+import com.example.uwb.uwbcontrol.UwbRangingController
 import com.example.uwb.bluetooth.BluetoothLEManagerHelper
 import com.example.uwb.location.LocationManagerHelper
 import com.example.uwb.manager.UwbManagerHelper

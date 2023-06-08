@@ -1,4 +1,4 @@
-package com.example.uwb;
+package com.example.uwb.uwbcontrol;
 
 import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
