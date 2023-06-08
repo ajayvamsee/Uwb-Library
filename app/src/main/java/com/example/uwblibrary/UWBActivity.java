@@ -22,6 +22,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 
+import com.example.uwb.WaveGlide;
 import com.example.uwb.uwbcontrol.UwbRangingController;
 import com.example.uwb.bluetooth.BluetoothLEManagerHelper;
 import com.example.uwb.location.LocationManagerHelper;
@@ -35,7 +36,7 @@ import java.util.Arrays;
 import java.util.List;
 
 
-public class UWBActivity extends AppCompatActivity implements UwbRangingController.UWBCallBack {
+public class UWBActivity extends AppCompatActivity implements WaveGlide.UWBCallBack {
 
     private static final String TAG = "UWBActivityLogs";
     private static final int PERMISSION_REQUEST_CODE = 1234;
@@ -71,6 +72,9 @@ public class UWBActivity extends AppCompatActivity implements UwbRangingControll
 
     private UwbService uwbService ;
 
+    private WaveGlide waveGlide;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,10 +95,16 @@ public class UWBActivity extends AppCompatActivity implements UwbRangingControll
 
         checkPermission();
 
+        waveGlide = new WaveGlide(this);
+
+        waveGlide.registerUwbCallBack(this);
+
+        waveGlide.startProcess();
+        //waveGlide.uwbBleStartScan();
 
 
 
-        uwbRangingController = new UwbRangingController(bluetoothLEManagerHelper,
+        /*wbRangingController = new UwbRangingController(bluetoothLEManagerHelper,
                 preferenceStorageHelper,
                 uwbManagerHelper,
                 locationManagerHelper,
@@ -105,7 +115,9 @@ public class UWBActivity extends AppCompatActivity implements UwbRangingControll
 
         // For testing call the all default
         uwbRangingController.initListener();
-        uwbRangingController.uwbBleStartScan();
+        uwbRangingController.uwbBleStartScan();*/
+
+
 
         binding.clUwbDetails.setVisibility(View.GONE);
         binding.uwbLoading.setVisibility(View.VISIBLE);
@@ -170,7 +182,9 @@ public class UWBActivity extends AppCompatActivity implements UwbRangingControll
     protected void onDestroy() {
         super.onDestroy();
         Log.d(TAG, "onDestroy");
-        uwbRangingController.deinit();
+        //uwbRangingController.deinit();
+
+        waveGlide.stopProcess();
     }
 
 

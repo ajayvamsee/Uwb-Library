@@ -15,7 +15,6 @@ class UwbService() : Service() {
 
     private var context: Context? = null
 
-    private lateinit var uwbManager: UwbManager
 
     override fun onBind(intent: Intent): IBinder? {
         return null
@@ -28,7 +27,6 @@ class UwbService() : Service() {
 
         val notification = createNotification()
 
-        uwbManager = UwbManager()
 
 
         // Start the service in the foreground and show the notification
@@ -40,7 +38,6 @@ class UwbService() : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.d(TAG, "onStartCommand: ")
 
-        uwbManager.startUwbRanging()
         return START_STICKY
 
     }
@@ -50,7 +47,6 @@ class UwbService() : Service() {
         Log.d(TAG, "onDestroy: ")
         super.onDestroy()
 
-        uwbManager.stopUwbRanging()
     }
 
     companion object {

@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
+    id 'maven-publish'
 }
 
 android {
@@ -41,4 +42,21 @@ dependencies {
 
     implementation "androidx.core.uwb:uwb-rxjava3:1.0.0-alpha04"
     implementation "androidx.core.uwb:uwb:1.0.0-alpha04"
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            // Creates a Maven publication called "release".
+            release(MavenPublication) {
+                // Applies the component for the release build variant.
+                from components.release
+
+                // You can then customize attributes of the publication as shown below.
+                groupId = 'com.ajay.uwb.library.wave-glide'   //[ groupId= 'your company domain']
+                artifactId = 'uwb'		// name of module or name of aar
+                version = '1.0'
+            }
+        }
+    }
 }
